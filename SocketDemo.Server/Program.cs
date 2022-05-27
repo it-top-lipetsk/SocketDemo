@@ -24,29 +24,32 @@ namespace SocketDemo.Server
                 {
                     Console.WriteLine("Новый клиент подключился");
                     
-                    var stream = client.GetStream();
-                    var builder = new StringBuilder();
-                    var data = new byte[64];
-                    var bytes = 0;
-                    do
+                    while (true)
                     {
-                        bytes = stream.Read(data, 0, data.Length);
-                        builder.Append(Encoding.Unicode.GetString(data, 0, bytes));
-                    } while (stream.DataAvailable);
-                    var request = JsonSerializer.Deserialize<Request>(builder.ToString());
-                    Response response = null;
-                    switch (request.Type)
-                    {
-                        case "get_all":
-                            response = GetAllStaffers();
-                            break;
-                        case "get_by_id":
-                            break;
-                    }
+                        var stream = client.GetStream();
+                        var builder = new StringBuilder();
+                        var data = new byte[64];
+                        var bytes = 0;
+                        do
+                        {
+                            bytes = stream.Read(data, 0, data.Length);
+                            builder.Append(Encoding.Unicode.GetString(data, 0, bytes));
+                        } while (stream.DataAvailable);
+                        var request = JsonSerializer.Deserialize<Request>(builder.ToString());
+                        Response response = null;
+                        switch (request.Type)
+                        {
+                            case "get_all":
+                                response = GetAllStaffers();
+                                break;
+                            case "get_by_id":
+                                break;
+                        }
 
-                    var message = JsonSerializer.Serialize(response);
-                    data = Encoding.Unicode.GetBytes(message);
-                    stream.Write(data, 0, data.Length);
+                        var message = JsonSerializer.Serialize(response);
+                        data = Encoding.Unicode.GetBytes(message);
+                        stream.Write(data, 0, data.Length);
+                    }
                 });
             }
             
