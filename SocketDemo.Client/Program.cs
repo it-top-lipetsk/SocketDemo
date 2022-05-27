@@ -16,7 +16,7 @@ namespace SocketDemo.Client
             
             while (true)
             {
-                var request = new Request
+                var request = new Message
                 {
                     Type = "get_all",
                     Body = ""
@@ -33,7 +33,7 @@ namespace SocketDemo.Client
                     bytes = stream.Read(data, 0, data.Length);
                     builder.Append(Encoding.Unicode.GetString(data, 0, bytes));
                 } while (stream.DataAvailable);
-                var response = JsonSerializer.Deserialize<Response>(builder.ToString());
+                var response = JsonSerializer.Deserialize<Message>(builder.ToString());
 
                 PrintResponse(response);
 
@@ -43,7 +43,7 @@ namespace SocketDemo.Client
             server.Close();
         }
 
-        static void PrintResponse(Response response)
+        static void PrintResponse(Message response)
         {
             var staffers = JsonSerializer.Deserialize<IEnumerable<Staffer>>(response.Body);
 

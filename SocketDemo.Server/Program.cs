@@ -24,19 +24,12 @@ namespace SocketDemo.Server
                 {
                     Console.WriteLine("Новый клиент подключился");
                     
+                    var stream = client.GetStream();
                     while (true)
                     {
-                        var stream = client.GetStream();
-                        var builder = new StringBuilder();
-                        var data = new byte[64];
-                        var bytes = 0;
-                        do
-                        {
-                            bytes = stream.Read(data, 0, data.Length);
-                            builder.Append(Encoding.Unicode.GetString(data, 0, bytes));
-                        } while (stream.DataAvailable);
-                        var request = JsonSerializer.Deserialize<Request>(builder.ToString());
-                        Response response = null;
+                        var request = TCP.GetRequest(stream);
+                        
+                        Message response = null;
                         switch (request.Type)
                         {
                             case "get_all":
@@ -47,7 +40,7 @@ namespace SocketDemo.Server
                         }
 
                         var message = JsonSerializer.Serialize(response);
-                        data = Encoding.Unicode.GetBytes(message);
+                        var data = Encoding.Unicode.GetBytes(message);
                         stream.Write(data, 0, data.Length);
                     }
                 });
@@ -56,7 +49,7 @@ namespace SocketDemo.Server
             server.Stop();
         }
 
-        static Response GetAllStaffers()
+        static Message GetAllStaffers()
         {
             Dapper.DefaultTypeMap.MatchNamesWithUnderscores = true;
 
@@ -73,7 +66,7 @@ namespace SocketDemo.Server
             JOIN tab_positions
                 ON tab_staffers.position_id = tab_positions.id;";
             var staffers = db.Query<Staffer>(sql);
-            return new Response
+            return new Message
             {
                 Type = "staffers",
                 Body = JsonSerializer.Serialize(staffers)
