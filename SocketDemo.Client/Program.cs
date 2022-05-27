@@ -27,7 +27,14 @@ namespace SocketDemo.Client
 
                 PrintResponse(response);
 
-                Console.ReadKey();
+                var select = Console.ReadLine();
+                if (select != "exit") continue;
+                TCP.SendMessage(stream, new Message
+                {
+                    Type = "exit",
+                    Body = ""
+                });
+                break;
             }
 
             server.Close();

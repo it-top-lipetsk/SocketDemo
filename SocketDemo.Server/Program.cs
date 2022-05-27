@@ -24,7 +24,8 @@ namespace SocketDemo.Server
                     Console.WriteLine("Новый клиент подключился");
                     
                     var stream = client.GetStream();
-                    while (true)
+                    var exit = false;
+                    while (!exit)
                     {
                         var request = TCP.GetMessage(stream);
                         
@@ -36,6 +37,14 @@ namespace SocketDemo.Server
                                 break;
                             case "get_by_id":
                                 break;
+                            case "exit":
+                                exit = true;
+                                break;
+                        }
+
+                        if (exit)
+                        {
+                            return;
                         }
 
                         TCP.SendMessage(stream, response);
