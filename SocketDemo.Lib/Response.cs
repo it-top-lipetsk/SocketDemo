@@ -1,4 +1,4 @@
-﻿namespace SocketDemo.Server;
+﻿namespace SocketDemo.Lib;
 
 public class Response
 {

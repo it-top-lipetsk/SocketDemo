@@ -4,6 +4,7 @@ using System.Text;
 using System.Text.Json;
 using Dapper;
 using Microsoft.Data.Sqlite;
+using SocketDemo.Lib;
 
 namespace SocketDemo.Server
 {
@@ -13,12 +14,16 @@ namespace SocketDemo.Server
         {
             var server = new TcpListener(IPAddress.Loopback, 8005);
             server.Start();
+            
+            Console.WriteLine("Сервер запущен");
 
             while (true)
             {
                 var client = server.AcceptTcpClient();
                 Task.Run(() =>
                 {
+                    Console.WriteLine("Новый клиент подключился");
+                    
                     var stream = client.GetStream();
                     var builder = new StringBuilder();
                     var data = new byte[64];

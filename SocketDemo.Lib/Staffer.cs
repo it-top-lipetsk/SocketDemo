@@ -1,6 +1,6 @@
 ﻿using System.Text.Json.Serialization;
 
-namespace SocketDemo.Server;
+namespace SocketDemo.Lib;
 
 public record Staffer
 {
