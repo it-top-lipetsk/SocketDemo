@@ -1,6 +1,5 @@
 ﻿using System.Net;
 using System.Net.Sockets;
-using System.Text;
 using System.Text.Json;
 using SocketDemo.Lib;
 
@@ -21,19 +20,10 @@ namespace SocketDemo.Client
                     Type = "get_all",
                     Body = ""
                 };
-                var message = JsonSerializer.Serialize(request);
-                var data = Encoding.Unicode.GetBytes(message);
-                stream.Write(data, 0, data.Length);
-            
-                var builder = new StringBuilder();
-                data = new byte[64];
-                var bytes = 0;
-                do
-                {
-                    bytes = stream.Read(data, 0, data.Length);
-                    builder.Append(Encoding.Unicode.GetString(data, 0, bytes));
-                } while (stream.DataAvailable);
-                var response = JsonSerializer.Deserialize<Message>(builder.ToString());
+
+                TCP.SendMessage(stream, request);
+
+                var response = TCP.GetMessage(stream);
 
                 PrintResponse(response);
 

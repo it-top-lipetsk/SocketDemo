@@ -1,6 +1,5 @@
 ﻿using System.Net;
 using System.Net.Sockets;
-using System.Text;
 using System.Text.Json;
 using Dapper;
 using Microsoft.Data.Sqlite;
@@ -27,7 +26,7 @@ namespace SocketDemo.Server
                     var stream = client.GetStream();
                     while (true)
                     {
-                        var request = TCP.GetRequest(stream);
+                        var request = TCP.GetMessage(stream);
                         
                         Message response = null;
                         switch (request.Type)
@@ -39,9 +38,7 @@ namespace SocketDemo.Server
                                 break;
                         }
 
-                        var message = JsonSerializer.Serialize(response);
-                        var data = Encoding.Unicode.GetBytes(message);
-                        stream.Write(data, 0, data.Length);
+                        TCP.SendMessage(stream, response);
                     }
                 });
             }
